@@ -1,0 +1,28 @@
+{
+  "name": "back",
+  "version": "1.0.0",
+  "description": "back p6 piiquante",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/seb1747/p6-piiquante.git"
+  },
+  "author": "sébastien binet",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/seb1747/p6-piiquante/issues"
+  },
+  "homepage": "https://github.com/seb1747/p6-piiquante#readme",
+  "dependencies": {
+    "-": "^0.0.1",
+    "bcrypt": "^5.0.1",
+    "express": "^4.18.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.5.2",
+    "mongoose-unique-validator": "^3.1.0",
+    "save": "^2.5.0"
+  }
+}
