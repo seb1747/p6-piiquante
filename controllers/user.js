@@ -6,6 +6,8 @@ const bcrypt = require('bcrypt');
 //rappel de jwt pour le token 
 const jwt = require('jsonwebtoken');
 
+const TOKEN = process.env.TOKEN
+
 //fonction signup 
 exports.signup =(req, res, next) => {
     bcrypt.hash(req.body.password, 10)
@@ -37,7 +39,7 @@ exports.login = (req,res,next) => {
             userId: user._id,
             token: jwt.sign(
                 {userId: user._id},
-                'RANDOM_TOKEN_SECRET',
+                TOKEN,
                 { expiresIn: '24h' }
                 )
     });
