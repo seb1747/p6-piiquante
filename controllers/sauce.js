@@ -42,55 +42,31 @@ exports.getOneSauce = (req, res, next) => {
 };
 
 // controlleur pour modifié une sauce 
-exports.modifySauce = (req, res, next) => {
-  // on met en place la logique pour "récupèrer" l'image et la supprimer de la base de données
-  if (req.file) {
-    Sauce.findOne({ _id: req.params.id }).then((sauce) => {
-      // on récupère le nom de l'image
-      const imgFile = sauce.imageUrl.split("/images/")[1];
-      console.log("l'imageUrl = ", imgFile);
-
-      // on supprime l'image du dossier "images"
-      fs.unlink(`images/${imgFile}`, (error) => {
-        if (error) throw error;
-      });
-    });
-  }
-
-  // on passe par la condition ternaire pour voir s'il y a un champ "file" ( image ) dans notre "req"
-  const sauceObject = req.file
-    ? {
-        ...JSON.parse(req.body.sauce), // si oui, on parse pour récupèrer l'objet
-        imageUrl: `${req.protocol}://${req.get("host")}/images/${
-          req.file.filename
-        }`, // on reconstitue l'URL en faisant appelle aux "propriétés" de l'objet "req"
-      }
-    : { ...req.body }; // sinon on récupère l'objet directemnt dans le corps de la requête
-  // on supprime le userId pour eviter qu'un user créé un objet pour la réattribuer à quelqu'un d'autre
-  delete sauceObject._userId;
-
-  // on compare l'objet user avec notre BD pour confirmer que l'objet lui appartient bien
-  Sauce.findOne({ _id: req.params.id })
-    .then((sauce) => {
-      console.log(" => userId de la sauce = " + sauce.userId);
-      console.log("   => userId de la req = " + req.auth.userId);
-      if (sauce.userId != req.auth.userId) {
-        // si Id est != de l'id du token => erreur 403 "unauthorized request"
-        console.log("differents userId !!!");
-        res.status(403).json({ message: "unauthorized request" });
+exports.modifySauce = (req, res) => {
+  const sauceObject = req.file ? {                /* je vérifie si une image est dans la requête */
+      ...JSON.parse(req.body.sauce),              /* si oui je défini le nom du fichier */
+      imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+  } : { ...req.body };                            /* sinon je récupère les datas de la requête */
+  delete sauceObject._userId;                     /* suppression de l'id pour que objet ne soit pas pris par qqun */
+  Sauce.findOne({_id: req.params.id})             /* recherche objet dans bdd */
+  .then((sauce) => {
+      if (sauce.userId != req.auth.userId) {      /* je vérifie s'il appartient au user */
+          res.status(403).json({                  /* si ce n'est pas le cas */
+              message : 'Vous n\'êtes pas autorisé à modifier cette sauce !'
+          });    
       } else {
-        // méthode updateOne pour modifier avec 2 arguments =>
-        // le 1er = _id de comparaison à modifier, le 2ème = la nouvelle version de l'objet avec le même _id
-        Sauce.updateOne(
-          { _id: req.params.id },
-          { ...sauceObject, _id: req.params.id }
-        )
-          .then(() => res.status(200).json({ message: "Sauce modifiée !!!" }))
-          // error 401 pour dire que l'objet n'est pas trouvé
-          .catch((error) => res.status(401).json({ error }));
+          const oldImageUrl = sauce.imageUrl.split('/images/')[1];
+          fs.unlink(`images/${oldImageUrl}`, () => {} );                 /* je supprime ancienne image */
+          Sauce.updateOne({ _id: req.params.id}, { ...sauceObject, _id: req.params.id}) /* sinon je l'inclus dans la bdd */
+          .then(() => res.status(200).json({
+              message : 'La sauce a été modifiée !'
+          }))
+          .catch(error => res.status(401).json({ error }));
       }
-    })
-    .catch((error) => res.status(400).json({ error })); // si l'ojet ne lui appartient pas
+  })
+  .catch((error) => {
+      res.status(400).json({ error });
+  });
 };
 
 
@@ -109,7 +85,7 @@ exports.deleteOneSauce = (req, res, next) => {
 exports.likeNDislike = (req,res,next) => {
   let like = req.body.like;
   let userId  = req.body.userId;
-  let sauceId = req.body.id;
+  let sauceId = req.params.id;
   console.log(like);
   console.log(userId);
   console.log(sauceId);
