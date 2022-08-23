@@ -42,42 +42,51 @@ exports.getOneSauce = (req, res, next) => {
 };
 
 // controlleur pour modifié une sauce 
-exports.modifySauce = (req, res) => {
-  const sauceObject = req.file ? {                /* je vérifie si une image est dans la requête */
-      ...JSON.parse(req.body.sauce),              /* si oui je défini le nom du fichier */
-      imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
-  } : { ...req.body };                            /* sinon je récupère les datas de la requête */
-  delete sauceObject._userId;                     /* suppression de l'id pour que objet ne soit pas pris par qqun */
-  Sauce.findOne({_id: req.params.id})             /* recherche objet dans bdd */
-  .then((sauce) => {
-      if (sauce.userId != req.auth.userId) {      /* je vérifie s'il appartient au user */
-          res.status(403).json({                  /* si ce n'est pas le cas */
-              message : 'Vous n\'êtes pas autorisé à modifier cette sauce !'
-          });    
-      } else {
-          const oldImageUrl = sauce.imageUrl.split('/images/')[1];
-          fs.unlink(`images/${oldImageUrl}`, () => {} );                 /* je supprime ancienne image */
-          Sauce.updateOne({ _id: req.params.id}, { ...sauceObject, _id: req.params.id}) /* sinon je l'inclus dans la bdd */
-          .then(() => res.status(200).json({
-              message : 'La sauce a été modifiée !'
-          }))
-          .catch(error => res.status(401).json({ error }));
+exports.modifySauce = (req, res, next) => {
+ /**const sauceObject = req.file
+    ? {
+        ...JSON.parse(req.body.sauce),
+        imageUrl: `${req.protocol}://${req.get("host")}/images/${
+          req.file.filename
+        }`,
       }
-  })
-  .catch((error) => {
-      res.status(400).json({ error });
-  });
+    : { ...req.body };
+  Sauce.updateOne(
+    { _id: req.params.id },
+    {
+      ...sauceObject,
+      _id: req.params.id,
+    }
+  )
+    .then(() => res.status(200).json({ message: "Sauce modifié !" }))
+    .catch((error) => res.status(400).json({ error }));*/
+    Sauce.findOne({_id: req.params.id}).then((sauce) =>{
+    const filename = sauce.imageUrl.split("/images/")[1];
+    fs.unlink(`images/${filename}`,()=> {
+      const sauceObject = req.file ? {
+        ...JSON.parse(req.body.sauce),
+        imageUrl: `${req.protocol}://${req.get("host")}/images/${req.file.filename}`,
+      }
+      : { ...req.body};
+      Sauce.updateOne({_id: req.params.id}, {...sauceObject, _id: req.params.id})
+      .then(() => res.status(200).json({ message: "sauce modifié !  "}))
+      .catch((error) => res.status(400).json({error}));
+    })
+})
 };
-
-
 // controlleur pour supprimé une sauce 
 
 exports.deleteOneSauce = (req, res, next) => {
-  Sauce.deleteOne({ _id: req.params.id })
-  .then(() =>
-    res.status(200).json({ message: "La sauce à bien été suprimée !" })
-  )
-  .catch((error) => res.status(403).json({ error }));
+  Sauce.findOne({_id: req.params.id})
+  .then((sauce) => {
+    const filename = sauce.imageUrl.split('/images/')[1];
+    fs.unlink(`images/${filename}`, () => {
+      Sauce.deleteOne({_id: req.params.id})
+      .then(() => res.status(200).json({message: 'la sauce à été supprimé ! '}))
+      .catch((error) => res.status(400).json({error}));
+    })
+  })
+  .catch((error) => res.status(500).json({error}));
 }
        
       

@@ -17,9 +17,9 @@ router.get('/:id',auth, sauceCtrl.getOneSauce);
 // route pour récupérer toute les sauces
 router.get('/' ,auth, sauceCtrl.getAllSauce);
 // route pour modifié  une sauce
-router.put('/:id',auth, sauceCtrl.modifySauce);
+router.put('/:id',auth, multer, sauceCtrl.modifySauce);
 //route pour supprimé une sauce 
-router.delete('/:id', auth, sauceCtrl.deleteOneSauce)
+router.delete('/:id', auth, multer,  sauceCtrl.deleteOneSauce)
 // route pout liker ou disliker une sauce 
 router.post('/:id/like', auth, sauceCtrl.likeNDislike)
 

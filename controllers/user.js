@@ -6,7 +6,7 @@ const bcrypt = require('bcrypt');
 //rappel de jwt pour le token 
 const jwt = require('jsonwebtoken');
 
-const TOKEN = process.env.TOKEN
+const TOKEN= process.env.TOKEN
 
 //fonction signup 
 exports.signup =(req, res, next) => {

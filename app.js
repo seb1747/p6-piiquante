@@ -11,6 +11,16 @@ dotenv.config();
 const MONGODB_URI = process.env.MONGODB_URI 
 //import des routes 
 
+const rateLimiter = require('express-rate-limit');
+
+const connectLimiter= rateLimiter({
+    windowMs: 15 * 60 * 1000,//15 minutes
+    max: 5, //nombre de requete maximum pour un même ip 
+    standardHeaders: true,
+    legacyHeaders: false,
+})
+
+
 const userRoutes = require('./routes/user')
 const sauceRoutes = require('./routes/sauce')
 
@@ -47,9 +57,9 @@ app.use(express.json());
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
     next();
 });*/
-
-app.use('/api/sauces', sauceRoutes)
-app.use('/api/auth', userRoutes)
 app.use("/images", express.static(path.join(__dirname, "images")));
+app.use('/api/sauces', sauceRoutes)
+app.use('/api/auth', userRoutes, connectLimiter);
+
 //export de l'app
 module.exports = app;
