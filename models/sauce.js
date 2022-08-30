@@ -2,6 +2,8 @@
 
 const mongoose = require('mongoose');
 
+const mongooseError = require('mongoose-errors');
+
 const sauceSchema = mongoose.Schema({
     userId : {type: 'string', required: true},
     name : {type: 'string', required: true},
@@ -15,5 +17,7 @@ const sauceSchema = mongoose.Schema({
     usersLiked : {type : [String]},
     usersDisliked : {type:[String]}
 })
+
+sauceSchema.plugin(mongooseError)
 
 module.exports = mongoose.model("Sauce", sauceSchema);
