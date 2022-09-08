@@ -1,5 +1,6 @@
+//import du schema de password
 const pwdSchema = require('../models/pwd');
-
+// mise en place de le logique de vérificationn de password
 module.exports = (req, res, next) => {
     if (! pwdSchema.validate(req.body.password)) {
         res.writeHead(400, 

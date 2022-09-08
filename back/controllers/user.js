@@ -5,7 +5,7 @@ const User = require('../models/user')
 const bcrypt = require('bcrypt');
 //rappel de jwt pour le token 
 const jwt = require('jsonwebtoken');
-
+//variable d'envirronnement contenant le token 
 const TOKEN= process.env.TOKEN;
 
 

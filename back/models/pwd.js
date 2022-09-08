@@ -1,3 +1,4 @@
+// import du module de validation de password
 const pwdValidator = require('password-validator');
 
 //creation du modele de password 

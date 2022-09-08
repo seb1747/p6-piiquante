@@ -1,11 +1,14 @@
-const multer = require('multer')
 
+// import de multer pour la gestion des fichiers
+const multer = require('multer')
+//création du dictionnaires d'extensions de fichiers images 
 const MIME_TYPES = {
   'image/jpg': 'jpg',
   'image/jpeg': 'jpg',
   'image/png': 'png',
   'image/webp': 'webp',
 }
+// logique de gestion des fichiers images 
 
 const storage = multer.diskStorage({
   destination: (req, file, callback) => {

@@ -1,6 +1,6 @@
 //import du modele sauce
 const Sauce = require('../models/sauce');
-//import du module fs d'express
+//import du module fs d'express permettant la gestion des fichiers images
 const fs  = require ('fs');
 
 //export du controllers creation de sauce 
@@ -79,10 +79,7 @@ exports.likeNDislike = (req,res,next) => {
   let like = req.body.like;
   let userId  = req.body.userId;
   let sauceId = req.params.id;
-  console.log(like);
-  console.log(userId);
-  console.log(sauceId);
-
+  
   switch (like) {
     // like = case est égal à 1 on incremente le like de +1
     case 1:
@@ -99,7 +96,7 @@ exports.likeNDislike = (req,res,next) => {
      })
      .catch((error) => res.status(400).json({error}));
      break;
-
+    // permet de modifié un like 
      case 0 :
       Sauce.findOne({_id: sauceId})
       .then((sauce) =>{
@@ -120,7 +117,7 @@ exports.likeNDislike = (req,res,next) => {
       })
       .catch((error) => res.status(404).json({error}));
       break;
-
+      // permet de disliker une sauce 
     case -1:
       Sauce.updateOne({_id: sauceId},
       {$push: {usersDisliked : userId}, $inc: {dislikes: +1}})

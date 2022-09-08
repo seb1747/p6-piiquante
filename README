@@ -1,0 +1,8 @@
+pour l'initialisation du projet 
+placez vous dans le dossier "back"
+effectuez la commande "npm install" daans le terminal pour installer les deppendance 
+puis effectuez la commande "nodemon server" pour lancer le serveur
+
+
+Placez vous dans le dossier "frontend" 
+Effectuer la commande "npm start" pour lancer la page frontend du projet 

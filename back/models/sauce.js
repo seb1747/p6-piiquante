@@ -1,7 +1,7 @@
 //import du package mongoose pour acces a la base données 
 
 const mongoose = require('mongoose');
-
+//import du package mongoose error pour le gestion des erreur 
 const mongooseError = require('mongoose-errors');
 
 const sauceSchema = mongoose.Schema({
