@@ -4,6 +4,7 @@ const TOKEN = process.env.TOKEN
 
 
 
+
 // mise en place de la logique pour la securité d'authentification
 module.exports = (req, res, next) => {
     try {

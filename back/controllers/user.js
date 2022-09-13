@@ -9,6 +9,7 @@ const jwt = require('jsonwebtoken');
 const TOKEN= process.env.TOKEN;
 
 
+
 //fonction signup 
 exports.signup =(req, res, next) => {
     bcrypt.hash(req.body.password, 10)
